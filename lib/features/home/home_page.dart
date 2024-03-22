@@ -6,6 +6,7 @@ import '../../model/user.dart';
 import '../../repo/comment_repo.dart';
 import '../../repo/post_repo.dart';
 import '../../repo/user_repo.dart';
+import 'post_list_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -49,16 +50,23 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color.fromARGB(255, 18, 18, 18),
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          title: Center(
-            child: Text(
-              users.isNotEmpty ? users[0].name : "Loading...",
-              style: const TextStyle(color: Colors.white),
-            ),
+      backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: Center(
+          child: Text(
+            (users.isNotEmpty && posts.isNotEmpty && comments.isNotEmpty)
+                ? users[0].name
+                : "Loading...",
+            style: const TextStyle(color: Colors.white),
           ),
         ),
-        body: Container());
+      ),
+      body: Center(
+        child: (users.isNotEmpty && posts.isNotEmpty && comments.isNotEmpty)
+            ? PostListWidget(userId: 1, posts: posts, comments: comments,)
+            : const CircularProgressIndicator(),
+      ),
+    );
   }
 }
