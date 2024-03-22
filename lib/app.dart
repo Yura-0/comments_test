@@ -8,7 +8,7 @@ class CommentsApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: HomePage(),
+      home: HomePage(userId: 1,),
     );
   }
 }

@@ -6,10 +6,15 @@ import '../../model/user.dart';
 import '../../repo/comment_repo.dart';
 import '../../repo/post_repo.dart';
 import '../../repo/user_repo.dart';
+import '../users/user_page.dart';
 import 'post_list_widget.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final int userId;
+  const HomePage({
+    super.key,
+    required this.userId,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -52,19 +57,42 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 18, 18, 18),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.black,
         title: Center(
           child: Text(
             (users.isNotEmpty && posts.isNotEmpty && comments.isNotEmpty)
-                ? users[0].name
+                ? users[widget.userId - 1].name
                 : "Loading...",
             style: const TextStyle(color: Colors.white),
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Image.asset('assets/userIcon.png'),
+            onPressed: () {
+              if (users.isNotEmpty && posts.isNotEmpty && comments.isNotEmpty) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserPage(
+                      userId: widget.userId,
+                      users: users,
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
       ),
       body: Center(
         child: (users.isNotEmpty && posts.isNotEmpty && comments.isNotEmpty)
-            ? PostListWidget(userId: 1, posts: posts, comments: comments,)
+            ? PostListWidget(
+                userId: widget.userId,
+                posts: posts,
+                comments: comments,
+              )
             : const CircularProgressIndicator(),
       ),
     );
