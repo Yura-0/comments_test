@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../injector.dart';
 import '../../model/comment.dart';
 import '../../model/post.dart';
 import '../../model/user.dart';
@@ -32,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+      SharedPreferences prefs = locator<SharedPreferences>();
       final List<User> loadedUsers = await UserRepository(
               usersUrl: "https://jsonplaceholder.typicode.com/users")
           .fetchUsers();
