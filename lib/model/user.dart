@@ -31,6 +31,19 @@ class User {
       company: Company.fromJson(json['company']),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'username': username,
+      'email': email,
+      'address': address.toJson(),
+      'phone': phone,
+      'website': website,
+      'company': company.toJson(),
+    };
+  }
 }
 
 class Address {
@@ -47,6 +60,16 @@ class Address {
     required this.zipcode,
     required this.geo,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'street': street,
+      'suite': suite,
+      'city': city,
+      'zipcode': zipcode,
+      'geo': geo.toJson(),
+    };
+  }
 
   static Address fromJson(Map<String, dynamic> json) {
     return Address(
@@ -68,6 +91,13 @@ class Geo {
     required this.lng,
   });
 
+  Map<String, dynamic> toJson() {
+    return {
+      'lat': lat,
+      'lng': lng,
+    };
+  }
+
   static Geo fromJson(Map<String, dynamic> json) {
     return Geo(
       lat: json['lat'],
@@ -87,6 +117,14 @@ class Company {
     required this.bs,
   });
 
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'catchPhrase': catchPhrase,
+      'bs': bs,
+    };
+  }
+
   static Company fromJson(Map<String, dynamic> json) {
     return Company(
       name: json['name'],
@@ -95,3 +133,4 @@ class Company {
     );
   }
 }
+

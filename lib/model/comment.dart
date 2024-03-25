@@ -13,6 +13,16 @@ class Comment {
     required this.body,
   });
 
+  Map<String, dynamic> toJson() {
+    return {
+      'postId': postId,
+      'id': id,
+      'name': name,
+      'email': email,
+      'body': body,
+    };
+  }
+
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
       postId: json['postId'],
