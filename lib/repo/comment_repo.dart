@@ -10,7 +10,8 @@ class CommentRepository {
   CommentRepository({required this.commentsUrl});
 
   Future<List<Comment>> fetchComments() async {
-    final response = await http.get(Uri.parse(commentsUrl));
+   try {
+      final response = await http.get(Uri.parse(commentsUrl));
 
     if (response.statusCode == 200) {
            final List<dynamic> jsonCommentsDynamic = json.decode(response.body);
@@ -20,5 +21,9 @@ class CommentRepository {
     } else {
       return [];
     }
+   }
+   catch (e) {
+    return [];
+   }
   }
 }

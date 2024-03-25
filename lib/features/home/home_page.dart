@@ -49,6 +49,8 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         comments = loadedComments;
       });
+
+      
     });
   }
 
@@ -79,6 +81,33 @@ class _HomePageState extends State<HomePage> {
                       userId: widget.userId,
                       users: users,
                     ),
+                  ),
+                );
+              } else {
+                showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    backgroundColor: const Color.fromARGB(255, 46, 45, 45),
+                    title: const Text(
+                      'Check your internet connection',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text(
+                          'OK',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 );
               }

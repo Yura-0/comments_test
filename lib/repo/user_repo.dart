@@ -9,7 +9,8 @@ class UserRepository {
   UserRepository({required this.usersUrl});
 
   Future<List<User>> fetchUsers() async {
-    final response = await http.get(Uri.parse(usersUrl));
+    try {
+      final response = await http.get(Uri.parse(usersUrl));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonUsersDynamic = json.decode(response.body);
@@ -18,6 +19,10 @@ class UserRepository {
 
       return jsonUsers.map((jsonUser) => User.fromJson(jsonUser)).toList();
     } else {
+      return [];
+    }
+    }
+    catch (e) {
       return [];
     }
   }

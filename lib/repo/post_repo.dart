@@ -10,7 +10,8 @@ class PostRepository {
   PostRepository({required this.postsUrl});
 
   Future<List<Post>> fetchPosts() async {
-    final response = await http.get(Uri.parse(postsUrl));
+    try {
+      final response = await http.get(Uri.parse(postsUrl));
 
     if (response.statusCode == 200) {
        final List<dynamic> jsonPostsDynamic = json.decode(response.body);
@@ -18,6 +19,10 @@ class PostRepository {
           jsonPostsDynamic.cast<Map<String, dynamic>>();
       return jsonPosts.map((jsonPost) => Post.fromJson(jsonPost)).toList();
     } else {
+      return [];
+    }
+    }
+    catch (e) {
       return [];
     }
   }
