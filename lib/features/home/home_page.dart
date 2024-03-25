@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/comment.dart';
 import '../../model/post.dart';
@@ -29,6 +32,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
       final List<User> loadedUsers = await UserRepository(
               usersUrl: "https://jsonplaceholder.typicode.com/users")
           .fetchUsers();
@@ -50,8 +54,72 @@ class _HomePageState extends State<HomePage> {
         comments = loadedComments;
       });
 
-      
+      await saveDataToCache(prefs);
+
+      if (users.isEmpty || posts.isEmpty || comments.isEmpty) {
+        bool isLoad = await loadDataFromCache(prefs);
+        if (!isLoad) {
+          showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              backgroundColor: const Color.fromARGB(255, 46, 45, 45),
+              title: const Text(
+                'Check your internet connection, and restart app',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'OK',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+      }
     });
+  }
+
+  Future<void> saveDataToCache(SharedPreferences prefs) async {
+    if (users.isNotEmpty && posts.isNotEmpty && comments.isNotEmpty) {
+      await prefs.setString(
+          'users', jsonEncode(users.map((user) => user.toJson()).toList()));
+      await prefs.setString(
+          'posts', jsonEncode(posts.map((post) => post.toJson()).toList()));
+      await prefs.setString('comments',
+          jsonEncode(comments.map((comment) => comment.toJson()).toList()));
+    }
+  }
+
+  Future<bool> loadDataFromCache(SharedPreferences prefs) async {
+    final String? usersData = prefs.getString('users');
+    final String? postsData = prefs.getString('posts');
+    final String? commentsData = prefs.getString('comments');
+    if (usersData != null && postsData != null && commentsData != null) {
+      setState(() {
+        users = (jsonDecode(usersData) as List<dynamic>)
+            .map((e) => User.fromJson(e))
+            .toList();
+        posts = (jsonDecode(postsData) as List<dynamic>)
+            .map((e) => Post.fromJson(e))
+            .toList();
+        comments = (jsonDecode(commentsData) as List<dynamic>)
+            .map((e) => Comment.fromJson(e))
+            .toList();
+      });
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -89,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                   builder: (_) => AlertDialog(
                     backgroundColor: const Color.fromARGB(255, 46, 45, 45),
                     title: const Text(
-                      'Check your internet connection',
+                      'Check your internet connection, and restart app',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
